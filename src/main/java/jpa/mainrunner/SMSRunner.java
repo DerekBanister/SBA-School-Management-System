@@ -53,67 +53,66 @@ public class SMSRunner {
         try {
         	//if student gets validated, send them to class menu
             if (studentDAO.validateStudent(email, pass)) {
-                Student verified = studentDAO.getStudentByEmail(email);
-                System.out.println("Welcome, " + verified.getsName());
-                classMenu(verified);
+                Student withAuth = studentDAO.getStudentByEmail(email);
+                System.out.println("Welcome to the SMS!, " + withAuth.getsName() + "!");
+                mainMenu(withAuth);
             }else {
             	//if invalid, run login again
                 System.out.println("Invalid login.");
                 login();
             }
         }  catch (NoResultException nre) {
-            System.out.println("Cannot find Student");
+            System.out.println("Cannot find student");
             login();
         }
     }
-    public void classMenu(Student withAuth) {
+    //main menu
+    public void mainMenu(Student withAuth) {
 
 		//present menu
 		System.out.println("You are successfully logged in!");
 		System.out.println("_________________________________");
-		System.out.println("Type in what you would like to do, here are some options");
-		System.out.println("Show all students");
-		System.out.println("Show all Courses");
-		System.out.println("Show my Courses");
-		System.out.println("Show student info");
-		System.out.println("Exit");
+		System.out.println("Type in the corresponding number for which choice you would like to make");
+		System.out.println("1. Show all students");
+		System.out.println("2. Show all Courses");
+		System.out.println("3. Show my Courses");
+		System.out.println("4. Show student info");
+		System.out.println("5. Exit");
 
 		 //next will display options, with switch cases calling services
 		int option = scan.nextInt();
 		switch (option) {
 		//each option will call a StudentService.whatever it needs to do
         case 1: 
-        	System.out.println("\nYou are currently enrolled in Course(s):\n");
+        	System.out.println("\nYou are currently enrolled in:\n");
              findCourses(withAuth);
              break;
         case 2: 
         	System.out.println("Course Registration Menu");
         	registerCourse(withAuth);
         	break;
-        case 3:  
-        	System.out.println("Invalid input.");
-        	classMenu(withAuth);
-        	break;
-        case 4: 
-        	System.out.println("Thank you for visiting!");
-        	System.exit(option);
-        	break;
-        case 5:
+        case 3:
         	System.out.println("Thanks for using SMS");
         	break;
-        default: System.out.println("Please try another option");
+        default: 
+        System.out.println("Please try another option");
+        mainMenu(withAuth);
         break;
 		}
     }
     private void registerCourse(Student withAuth) {
         System.out.println("Which course would you like to register for?");
+       
         try {
             List<Course> courseList = courseDAO.getAllCourses();
+            //parse data from courses
             courseList.forEach(Course -> System.out.println(Course.getcId() + " for " + Course.getcName() + " with " + Course.getcInstructorName()));
+            //let user select course
             int courseSelection = Integer.parseInt(scan.nextLine());
+            //register student
             studentDAO.registerStudentToCourse(withAuth.getsEmail(), courseSelection);
             System.out.println("Returning to Course Menu.");
-            classMenu(withAuth);
+            mainMenu(withAuth);
         } catch (NoResultException nre) {
             System.out.println("There is no course for that ID.");
             registerCourse(withAuth);
@@ -124,13 +123,16 @@ public class SMSRunner {
     }
     
     private void findCourses(Student withAuth) {
+    	//if the student has any courses
         if(studentDAO.getStudentCourses(withAuth.getsEmail()).size() > 0) {
+        	//get all courses for the student
             List<Course> courseList = studentDAO.getStudentCourses(withAuth.getsEmail());
             courseList.forEach(Course -> System.out.println(Course.getcName() + " with " + Course.getcInstructorName()));
-            classMenu(withAuth);
+            mainMenu(withAuth);
         }  else  {
+        	//student has no courses
             System.out.println("You are not registered to any courses.");
-            classMenu(withAuth);
+            mainMenu(withAuth);
         }
     }
  

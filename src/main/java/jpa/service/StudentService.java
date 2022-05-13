@@ -21,7 +21,7 @@ public class StudentService implements StudentDAO {
 	
 	@Override
 	public List<Student> getAllStudents() {
-//	    example query to db. works and connected
+//	    Select all Students
 		Session session = new 
 				Configuration().configure().buildSessionFactory().openSession();
 		 try {
@@ -39,11 +39,14 @@ public class StudentService implements StudentDAO {
 	
 	@Override
 	public Student getStudentByEmail(String sEmail) {
+		//select student by email
 		Session session = new 
 				Configuration().configure().buildSessionFactory().openSession();
-		String tQuery = "From Student s where s.sEmail = :sEmail";
+		String tQuery = "FROM Student s WHERE s.sEmail = :sEmail";
+		//setParameter to filter by email
         Query q = session.createQuery(tQuery).setParameter("sEmail", sEmail);
         try{
+        	//get one result from the query list
             Student studentName = (Student) q.getSingleResult();
             return studentName;
         } catch (NoResultException e){
@@ -58,13 +61,15 @@ public class StudentService implements StudentDAO {
 		Session session = new 
 				Configuration().configure().buildSessionFactory().openSession();
         try {
+        	//first find a student by their email
             TypedQuery tQuery = session.getNamedQuery("validateStudent");
             tQuery.setParameter("sEmail", sEmail);
             Student student = (Student) tQuery.getSingleResult();
             session.close();
+            //then check if email && pass are correct
             return Objects.equals(student.getsPass(), sPassword) && (Objects.equals(student.getsEmail(), sEmail));
         } catch (NoResultException e) {
-            System.out.println("Nothing Found");
+            System.out.println("Student cannot be validated");
             return false;
         }
     }
@@ -74,7 +79,7 @@ public class StudentService implements StudentDAO {
 		Session session = new 
 				Configuration().configure().buildSessionFactory().openSession();
 		Transaction t = session.beginTransaction();
-        String hql = "FROM Student s LEFT JOIN FETCH s.sCourses c WhERE s.sEmail = :sEmail";
+        String hql = "FROM Student s LEFT JOIN FETCH s.sCourses c WHERE s.sEmail = :sEmail";
         String hql2 = "FROM Course c WHERE c.cId = :cId";
         TypedQuery tQuery = session.createQuery(hql).setParameter("sEmail", sEmail);
         TypedQuery tQuery2 = session.createQuery(hql2).setParameter("cId", cId);
