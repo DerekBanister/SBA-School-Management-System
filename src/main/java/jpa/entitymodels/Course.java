@@ -1,56 +1,52 @@
 package jpa.entitymodels;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table
+@Table(name= "Course")
 public class Course {
-	
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int cId;
-	private String cName;
-	private String cInstructorName;
-	
-	
-	public Course() {
-		super();
-	}
+    @Column(name = "id", nullable = false, unique = true)
+    private Integer cId;
+    @Column(name = "name", length = 50, nullable = false)
+    private String cName;
+    @Column(name = "instructor", length = 50, nullable = false)
+    private String cInstructorName;
 
-	public Course(int cId, String cName, String cInstructorName) {
-		super();
-		this.cId = cId;
-		this.cName = cName;
-		this.cInstructorName = cInstructorName;
-	}
+    public Course() {
+        this.cId = 0;
+        this.cName = "";
+        this.cInstructorName = "";
+    }
 
-	public int getcId() {
-		return cId;
-	}
+    public Course(Integer id, String name, String instructor) {
+        this.cId = id;
+        this.cName = name;
+        this.cInstructorName = instructor;
+    }
 
-	public void setcId(int cId) {
-		this.cId = cId;
-	}
+    public Integer getcId() {
+        return cId;
+    }
 
-	public String getcName() {
-		return cName;
-	}
+    public void setcId(Integer cId) {
+        this.cId = cId;
+    }
 
-	public void setcName(String cName) {
-		this.cName = cName;
-	}
+    public String getcName() {
+        return cName;
+    }
 
-	public String getcInstructorName() {
-		return cInstructorName;
-	}
+    public void setcName(String cName) {
+        this.cName = cName;
+    }
 
-	public void setcInstructorName(String cInstructorName) {
-		this.cInstructorName = cInstructorName;
-	}
-	
-	
+    public String getcInstructorName() {
+        return cInstructorName;
+    }
+
+    public void setcInstructorName(String cInstructorName) {
+        this.cInstructorName = cInstructorName;
+    }
 }

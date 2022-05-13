@@ -1,74 +1,71 @@
 package jpa.entitymodels;
 
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 @Entity
-@Table
+@Table(name= "Student")
+@NamedQueries({
+        @NamedQuery(name="validateStudent", query="FROM Student s WHERE s.sEmail = :sEmail"),
+        @NamedQuery(name="getStudentCourses", query="FROM Student s LEFT JOIN FETCH s.sCourses WHERE s.sEmail = :sEmail"),
+})
 public class Student {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-	private String sEmail;
-	private String sName;
-	private String sPass;
-	@OneToMany(targetEntity=Student.class,fetch=FetchType.EAGER)
-	private List<String> sCourses;
-	
-	
-	public Student() {
-	}
+    @Column(name = "email", length = 50, nullable = false, unique = true)
+    private String sEmail;
+    @Column(name = "name", length = 50, nullable = false)
+    private String sName;
+    @Column(name = "password", length = 50, nullable = false )
+    private String sPass;
 
-	public Student(String sEmail, String sName, String sPass, List<String> sCourses) {
-		super();
-		this.sEmail = sEmail;
-		this.sName = sName;
-		this.sPass = sPass;
-		this.sCourses = sCourses;
-	}
+    @ManyToMany(targetEntity = Course.class, cascade = CascadeType.ALL)
+    private List<Course> sCourses;
 
-	public String getsEmail() {
-		return sEmail;
-	}
+    public Student(){
+        sEmail = "";
+        sName = "";
+        sPass = "";
+        sCourses = new ArrayList<>();
+    }
 
-	public void setsEmail(String sEmail) {
-		this.sEmail = sEmail;
-	}
+    public Student(String email, String name, String password, List<Course> sCourses) {
+        this.sEmail = email;
+        this.sName = name;
+        this.sPass = password;
+        this.sCourses = sCourses;
+    }
 
-	public String getsName() {
-		return sName;
-	}
+    public String getsEmail() {
+        return sEmail;
+    }
 
-	public void setsName(String sName) {
-		this.sName = sName;
-	}
+    public void setsEmail(String sEmail) {
+        this.sEmail = sEmail;
+    }
 
-	public String getsPass() {
-		return sPass;
-	}
+    public String getsName() {
+        return sName;
+    }
 
-	public void setsPass(String sPass) {
-		this.sPass = sPass;
-	}
-	@ManyToOne
-	@JoinColumn(name="cId")
-	public List<String> getsCourses() {
-		return sCourses;
-	}
+    public void setsName(String sName) {
+        this.sName = sName;
+    }
 
-	public void setsCourses(List<String> sCourses) {
-		this.sCourses = sCourses;
-	}
+    public String getsPass() {
+        return sPass;
+    }
 
-	
-	
-	
+    public void setsPass(String sPass) {
+        this.sPass = sPass;
+    }
+
+    public List<Course> getsCourses() {
+        return sCourses;
+    }
+
+    public void setsCourses(List<Course> sCourses) {
+        this.sCourses = sCourses;
+    }
 }
